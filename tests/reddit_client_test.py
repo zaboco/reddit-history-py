@@ -1,6 +1,6 @@
 from types import UnicodeType
-from unittest import TestCase
-from fetch.praw_client import PrawClient
+import unittest
+from fetch.http_reddit_client import HttpRedditClient
 
 SUBREDDIT_NAME = 'python'
 
@@ -23,18 +23,31 @@ class RedditClientTest(object):
     self.client = self.make_client()
 
 
-class PrawTest(RedditClientTest, TestCase):
+class HttpRedditClientTest(RedditClientTest, unittest.TestCase):
   @staticmethod
   def make_client():
     reddit_user_agent = '[test] reddit-feed-py (by /u/zaboco)'
-    return PrawClient(user_agent=reddit_user_agent, subreddit=SUBREDDIT_NAME)
+    return HttpRedditClient(user_agent=reddit_user_agent, subreddit=SUBREDDIT_NAME)
+
+  def test_can_fetch_multiple_submissions(self):
+    submissions = self.client.get_submissions(limit=2)
+    self.assertEqual(len(submissions), 2)
 
   def test_new_submission_contains_required_fields(self):
-    expected_fields = set(SUBMISSION_FIELD_TYPES.keys())
-    submission = next(self.client.get_submissions(limit=1))
-    self.assertSetEqual(set(submission.keys()), expected_fields)
+    submission = self.__get_first_submission()
+    from pprint import pprint
+    pprint(submission)
+    self.assertSchema(submission, SUBMISSION_FIELD_TYPES)
 
-  def test_new_submission_fields_have_the_right_types(self):
-    submission = next(self.client.get_submissions(limit=1))
-    for field, type in SUBMISSION_FIELD_TYPES.items():
-      self.assertIsInstance(submission[field], type)
+  def test_can_fetch_submissions_before(self):
+    first, second = self.client.get_submissions(limit=2)
+    submissions_before_second = self.client.get_submissions(before=second)
+    self.assertListEqual(submissions_before_second, [first])
+
+  def assertSchema(self, object, schema):
+    self.assertSetEqual(set(object.keys()), set(schema.keys()))
+    for field, type in schema.items():
+      self.assertIsInstance(object[field], type)
+
+  def __get_first_submission(self):
+    return self.client.get_submissions(limit=1)[0]
