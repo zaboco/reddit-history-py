@@ -12,4 +12,7 @@ class PrawClient:
 
 def normalize_submission(submission):
   keys = ['title', 'name', 'author', 'created_utc', 'score', 'url', 'subreddit']
-  return {key: submission.__dict__[key] for key in keys}
+  filtered_submission = {key: submission.__dict__[key] for key in keys}
+  filtered_submission['author'] = filtered_submission['author'].name
+  filtered_submission['subreddit'] = filtered_submission['subreddit'].display_name
+  return filtered_submission
