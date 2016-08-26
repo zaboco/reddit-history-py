@@ -1,5 +1,7 @@
 from itertools import takewhile
 
+from tests.support.fakes import make_submission
+
 
 class MockRedditClient:
   def __init__(self, names):
@@ -15,15 +17,3 @@ class MockRedditClient:
     submission = make_submission(name)
     self.submissions.insert(0, submission)
     return submission
-
-
-def make_submission(name):
-  base_submission = {
-    'title': u'sample submission',
-    'author': u'me',
-    'created_utc': 1472158286.0,
-    'score': 10,
-    'permalink': u'/r/subreddit/comments/4zibaf/title/',
-    'subreddit': u'subreddit'
-  }
-  return dict(base_submission, name=name)
