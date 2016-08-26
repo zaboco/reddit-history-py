@@ -16,7 +16,7 @@ class HttpRedditClient:
 
 def extract_submission(submission_data):
   submission = submission_data['data']
-  keys = ['title', 'name', 'author', 'created_utc', 'score', 'url', 'subreddit']
+  keys = ['title', 'name', 'author', 'created_utc', 'score', 'permalink', 'subreddit']
   return {key: submission[key] for key in keys}
 
 
