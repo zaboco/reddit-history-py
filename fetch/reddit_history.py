@@ -13,7 +13,7 @@ class RedditHistory:
 
   def __fetch_latest(self):
     query = {'before': self.latest_submission} if self.latest_submission else {'limit': self.start_with}
-    new_submissions = self.reddit_client.get_submissions(**query)
+    new_submissions = self.reddit_client.get_items(**query)
     if len(new_submissions) > 0:
       self.latest_submission = new_submissions[0]
     return new_submissions

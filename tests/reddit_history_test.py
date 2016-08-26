@@ -19,14 +19,14 @@ class RedditHistoryTest(TestCase):
       start_with=self.start_with)
 
   def test_initially_stores_the_predefined_number_of_submissions(self):
-    [latest_submission] = self.mock_reddit_client.get_submissions(limit=self.start_with)
+    [latest_submission] = self.mock_reddit_client.get_items(limit=self.start_with)
     self.history.store_latest()
     self.assertInserted([map_submission(latest_submission)])
 
   def test_stores_only_submissions_added_while_idle(self):
     self.__store_latest_and_rest_mock()
     new_submission = fake.submission(u'new')
-    self.mock_reddit_client.add_submission(new_submission)
+    self.mock_reddit_client.add_item(new_submission)
     self.history.store_latest()
     self.assertInserted([map_submission(new_submission)])
 

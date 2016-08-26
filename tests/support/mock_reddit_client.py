@@ -2,14 +2,14 @@ from itertools import takewhile
 
 
 class MockRedditClient:
-  def __init__(self, submissions):
-    self.submissions = submissions
+  def __init__(self, items):
+    self.items = items
 
-  def get_submissions(self, limit=100, before=None):
+  def get_items(self, limit=100, before=None):
     if before:
-      return list(takewhile(lambda s: s != before, self.submissions))
+      return list(takewhile(lambda s: s != before, self.items))
     else:
-      return self.submissions[:limit]
+      return self.items[:limit]
 
-  def add_submission(self, submission):
-    self.submissions.insert(0, submission)
+  def add_item(self, submission):
+    self.items.insert(0, submission)
