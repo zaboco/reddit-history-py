@@ -23,12 +23,17 @@ class RedditHistoryTest(TestCase):
     self.assertInserted([map_submission(latest_submission)])
 
   def test_stores_only_submissions_added_while_idle(self):
-    self.__store_latest()
+    self.__store_latest_and_rest_mock()
     new_submission = self.mock_reddit_client.add_submission(u'new')
     self.history.store_latest()
     self.assertInserted([map_submission(new_submission)])
 
-  def __store_latest(self):
+  def test_stores_nothing_if_no_new_submission_since_last_time(self):
+    self.__store_latest_and_rest_mock()
+    self.history.store_latest()
+    self.mock_data_store.assert_not_called()
+
+  def __store_latest_and_rest_mock(self):
     self.history.store_latest()
     self.mock_data_store.reset_mock()
 

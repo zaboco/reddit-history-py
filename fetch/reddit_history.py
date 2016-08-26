@@ -7,10 +7,13 @@ class RedditHistory:
     self.latest_submission = None
 
   def store_latest(self):
-    if (self.latest_submission):
-      submissions = self.reddit_client.get_submissions(before=self.latest_submission)
-    else:
-      submissions = self.reddit_client.get_submissions(limit=self.start_with)
-    self.latest_submission = submissions[0]
+    submissions = self.__fetch_latest()
     mapped_submissions = map(map_submission, submissions)
     self.data_store.insert_many(mapped_submissions)
+
+  def __fetch_latest(self):
+    query = {'before': self.latest_submission} if self.latest_submission else {'limit': self.start_with}
+    new_submissions = self.reddit_client.get_submissions(**query)
+    if len(new_submissions) > 0:
+      self.latest_submission = new_submissions[0]
+    return new_submissions
