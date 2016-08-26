@@ -1,11 +1,9 @@
 from itertools import takewhile
 
-from tests.support.fakes import make_submission
-
 
 class MockRedditClient:
-  def __init__(self, names):
-    self.submissions = map(make_submission, names)
+  def __init__(self, submissions):
+    self.submissions = submissions
 
   def get_submissions(self, limit=100, before=None):
     if before:
@@ -13,7 +11,5 @@ class MockRedditClient:
     else:
       return self.submissions[:limit]
 
-  def add_submission(self, name):
-    submission = make_submission(name)
+  def add_submission(self, submission):
     self.submissions.insert(0, submission)
-    return submission

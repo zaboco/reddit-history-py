@@ -1,4 +1,4 @@
-def make_submission(name):
+def submission(name):
   base_submission = {
     'title': u'sample submission',
     'author': u'me',

@@ -3,13 +3,14 @@ from mock import Mock, call
 
 from fetch.mappers import map_submission
 from fetch.reddit_history import RedditHistory
+from tests.support import fake
 from tests.support.mock_reddit_client import MockRedditClient
 
 
 class RedditHistoryTest(TestCase):
   def setUp(self):
-    pass
-    self.mock_reddit_client = MockRedditClient([u'first', u'second', u'third'])
+    submissions = map(fake.submission, [u'first', u'second', u'third'])
+    self.mock_reddit_client = MockRedditClient(submissions)
     self.mock_data_store = Mock()
     self.start_with = 1
     self.history = RedditHistory(
@@ -24,7 +25,8 @@ class RedditHistoryTest(TestCase):
 
   def test_stores_only_submissions_added_while_idle(self):
     self.__store_latest_and_rest_mock()
-    new_submission = self.mock_reddit_client.add_submission(u'new')
+    new_submission = fake.submission(u'new')
+    self.mock_reddit_client.add_submission(new_submission)
     self.history.store_latest()
     self.assertInserted([map_submission(new_submission)])
 
