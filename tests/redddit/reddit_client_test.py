@@ -1,12 +1,5 @@
-import os
 from types import UnicodeType
-from unittest import TestCase, skip
-from unittest import skipIf
-
-from fetch.http_reddit_client import HttpRedditClient
-from support.mock_reddit_client import MockRedditClient
-
-SUBREDDIT_NAME = 'python'
+from unittest import TestCase
 
 SUBMISSION_FIELD_TYPES = {
   'title': UnicodeType,
@@ -47,29 +40,3 @@ class Base:
 
     def __get_first_submission(self):
       return self.client.get_submissions(limit=1)[0]
-
-
-class MockRedditClientTest(Base.RedditClientTest):
-  @staticmethod
-  def make_client():
-    base_submission = {
-      'title': u'sample submission',
-      'author': u'me',
-      'created_utc': 1472158286.0,
-      'score': 10,
-      'permalink': u'/r/subreddit/comments/4zibaf/title/',
-      'subreddit': u'subreddit'
-    }
-    return MockRedditClient([
-      dict(base_submission, name=u'first'),
-      dict(base_submission, name=u'second'),
-      dict(base_submission, name=u'third')
-    ])
-
-
-@skipIf(not os.environ.get('EXTERNAL_TEST'), 'external')
-class HttpRedditClientTest(Base.RedditClientTest):
-  @staticmethod
-  def make_client():
-    reddit_user_agent = '[test] reddit-feed-py (by /u/zaboco)'
-    return HttpRedditClient(user_agent=reddit_user_agent, subreddit=SUBREDDIT_NAME)
