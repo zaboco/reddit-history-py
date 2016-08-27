@@ -1,8 +1,8 @@
 import os
 from unittest import skipIf
 
-from fetch.http_reddit_client import HttpRedditClient
-from fetch.reddit_descriptors import submissions_descriptor, comments_descriptor
+from history.http_reddit_client import HttpRedditClient
+from history.reddit_descriptors import submissions_descriptor, comments_descriptor
 from tests.redddit.reddit_client_test import Base
 
 

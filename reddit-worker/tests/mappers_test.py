@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from fetch.mappers import map_submission
+from history.mappers import map_submission
 from tests.support.fakes import make_submission
 
 

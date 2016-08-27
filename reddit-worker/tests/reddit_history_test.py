@@ -1,8 +1,7 @@
 from unittest import TestCase
 
+from history.reddit_history import RedditHistory
 from mock import Mock, call
-
-from fetch.reddit_history import RedditHistory
 from tests.support.fakes import make_reddit_item, map_reddit_item
 from tests.support.mock_reddit_client import MockRedditClient
 

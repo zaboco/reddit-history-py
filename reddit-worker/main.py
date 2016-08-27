@@ -2,12 +2,11 @@ import sys
 import time
 
 import yaml
+from history.http_reddit_client import HttpRedditClient
+from history.mappers import map_submission, map_comment
+from history.reddit_descriptors import submissions_descriptor, comments_descriptor
+from history.reddit_history import RedditHistory
 from pymongo import MongoClient
-
-from fetch.http_reddit_client import HttpRedditClient
-from fetch.mappers import map_submission, map_comment
-from fetch.reddit_descriptors import submissions_descriptor, comments_descriptor
-from fetch.reddit_history import RedditHistory
 
 
 with open('config.yml', 'r') as config_file:
