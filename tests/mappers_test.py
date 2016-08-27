@@ -1,12 +1,12 @@
 from unittest import TestCase
 
 from fetch.mappers import map_submission
-from tests.support import fake
+from tests.support.fakes import make_submission
 
 
 class MappersTest(TestCase):
   def test_submission_mapper(self):
-    submission = fake.submission(u'unique_name')
+    submission = make_submission(u'unique_name')
     mapped_submission = map_submission(submission)
     self.assertDictEqual(mapped_submission, {
       '_id': submission['name'],

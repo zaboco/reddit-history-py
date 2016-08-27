@@ -1,4 +1,4 @@
-def submission(name):
+def make_submission(name):
   base_submission = {
     'title': u'sample submission',
     'author': u'me',
@@ -8,3 +8,11 @@ def submission(name):
     'subreddit': u'subreddit'
   }
   return dict(base_submission, name=name)
+
+
+def make_reddit_item(name):
+  return dict(name=name)
+
+
+def map_reddit_item(item):
+  return dict(_id=item['name'])
