@@ -46,6 +46,11 @@ class Base:
       submissions_before_second = self.client.get_items(before=second)
       self.assertListEqual(submissions_before_second, [first])
 
+    def test_returns_empty_list_if_nothing_before(self):
+      [first] = self.client.get_items(limit=1)
+      submissions_before_first = self.client.get_items(before=first)
+      self.assertListEqual(submissions_before_first, [])
+
     def assertValidSchema(self, object):
       self.assertSetEqual(set(object.keys()), set(self.item_schema().keys()))
       for field, type in self.item_schema().items():

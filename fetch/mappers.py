@@ -9,3 +9,15 @@ def map_submission(submission):
     'subreddit': submission['subreddit'],
     'kind': 'submission'
   }
+
+def map_comment(comment):
+  return {
+    '_id': comment['name'],
+    'text': comment['body'],
+    'created_at': comment['created_utc'],
+    'author': comment['author'],
+    'score': comment['score'],
+    'link_id': comment['link_id'],
+    'subreddit': comment['subreddit'],
+    'kind': 'comment'
+  }
