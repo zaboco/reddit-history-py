@@ -23,7 +23,7 @@ def build_reddit_history(reddit_descriptor, data_mapper, data_store):
 
 
 mongo_client = MongoClient(MONGO_CONFIG['host'], MONGO_CONFIG['port'])
-data_store = mongo_client.reddit_history.entries
+data_store = mongo_client[MONGO_CONFIG['database']][MONGO_CONFIG['collection']]
 submissions_history = build_reddit_history(submissions_descriptor, map_submission, data_store)
 comments_history = build_reddit_history(comments_descriptor, map_comment, data_store)
 

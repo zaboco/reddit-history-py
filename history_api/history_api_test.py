@@ -5,7 +5,7 @@ from flask import json
 import history_api
 
 
-TEST_ENTRIES = [
+TEST_ITEMS = [
   {
     '_id': u't3_4zu59x',
     'author': u'author_name',
@@ -26,23 +26,23 @@ class ApiTest(TestCase):
     history_api.app.config.update(DATABASE_NAME='test')
     cls.client = history_api.app.test_client()
     with history_api.app.app_context():
-      init_db(history_api.get_db())
+      init_data_store(history_api.get_data_store())
 
   @classmethod
   def tearDownClass(cls):
     with history_api.app.app_context():
-      clean_db(history_api.get_db())
+      clean_data_store(history_api.get_data_store())
 
   def test_ok(self):
     response = self.client.get('/items')
     items = json.loads(response.data)
-    self.assertEqual(items, TEST_ENTRIES)
+    self.assertEqual(items, TEST_ITEMS)
 
 
-def init_db(db):
-  db.entries.drop()
-  db.entries.insert_many(TEST_ENTRIES)
+def init_data_store(data_source):
+  data_source.drop()
+  data_source.insert_many(TEST_ITEMS)
 
 
-def clean_db(db):
-  db.entries.drop()
+def clean_data_store(data_source):
+  data_source.drop()

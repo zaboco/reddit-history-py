@@ -8,3 +8,5 @@ app:
 mongo:
   host: localhost
   port: 27017
+  database: reddit_history
+  collection: items
