@@ -69,6 +69,21 @@ class ApiTest(TestCase):
     items = json.loads(response.data)
     self.assertEqual(items, wanted_items)
 
+  def test_items_are_sorted_in_reverse_chronological_order(self):
+    latest_timestamp = 1472303229.0
+    wanted_items = [fake_item(i, created_at=latest_timestamp - i) for i in range(3)]
+    self.data_source.insert_many([
+      wanted_items[1],
+      wanted_items[0],
+      wanted_items[2]
+    ])
+    response = self.client.get('/items?'
+                               'subreddit=' + DEFAULT_SUBREDDIT +
+                               '&from=' + `PAST_TIMESTAMP` +
+                               '&to=' + `FUTURE_TIMESTAMP`)
+    items = json.loads(response.data)
+    self.assertEqual(items, wanted_items)
+
 
 def clean_data_store(data_source):
   data_source.drop()

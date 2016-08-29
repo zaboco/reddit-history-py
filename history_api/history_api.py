@@ -28,14 +28,14 @@ def close_db(error):
 def items():
   data_source = get_data_store()
   args = request.args
-  items = list(data_source.find({
+  items = data_source.find({
     'subreddit': args.get('subreddit'),
     'created_at': {
       '$gte': float(args.get('from')),
       '$lte': float(args.get('to'))
     }
-  }))
-  return jsonify(items)
+  }).sort('created_at', pymongo.DESCENDING)
+  return jsonify(list(items))
 
 
 if __name__ == '__main__':
