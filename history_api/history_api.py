@@ -1,5 +1,5 @@
 import pymongo
-from flask import Flask, g as context, jsonify
+from flask import Flask, g as context, jsonify, request
 
 app = Flask(__name__)
 
@@ -27,7 +27,8 @@ def close_db(error):
 @app.route('/items')
 def items():
   data_source = get_data_store()
-  items = list(data_source.find())
+  subreddit = request.args.get('subreddit')
+  items = list(data_source.find({'subreddit': subreddit}))
   return jsonify(items)
 
 

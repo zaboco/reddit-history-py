@@ -5,17 +5,26 @@ from flask import json
 import history_api
 
 
-TEST_ITEMS = [
-  {
-    '_id': u't3_4zu59x',
+def fake_item(index, subreddit):
+  base_item = {
+    '_id': u't3_4zu59' + `index`,
     'author': u'author_name',
     'created_at': 1472303229.0,
     'kind': u'submission',
     'permalink': u'/r/subreddit/comments/4zu59x/title/',
     'score': 2,
-    'subreddit': u'subreddit',
     'text': u'Some text'
   }
+  return dict(base_item, subreddit=subreddit)
+
+
+WANTED_SUBREDDIT = u'wanted_subreddit'
+WANTED_SUBREDDIT_ITEMS = [fake_item(i, WANTED_SUBREDDIT) for i in range(2)]
+
+TEST_ITEMS = [
+  WANTED_SUBREDDIT_ITEMS[0],
+  fake_item(100, u'other_subreddit'),
+  WANTED_SUBREDDIT_ITEMS[1]
 ]
 
 
@@ -33,10 +42,10 @@ class ApiTest(TestCase):
     with history_api.app.app_context():
       clean_data_store(history_api.get_data_store())
 
-  def test_ok(self):
-    response = self.client.get('/items')
+  def test_can_filter_by_subreddit(self):
+    response = self.client.get('/items?subreddit=' + WANTED_SUBREDDIT)
     items = json.loads(response.data)
-    self.assertEqual(items, TEST_ITEMS)
+    self.assertEqual(items, WANTED_SUBREDDIT_ITEMS)
 
 
 def init_data_store(data_source):
