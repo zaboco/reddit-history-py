@@ -84,6 +84,15 @@ class ApiTest(TestCase):
     items = json.loads(response.data)
     self.assertEqual(items, wanted_items)
 
+  def test_server_responds_with_error_if_any_query_params_missing(self):
+    without_subreddit = self.client.get('/items?from=' + `PAST_TIMESTAMP` + '&to=' + `FUTURE_TIMESTAMP`)
+    without_from = self.client.get('/items?subreddit=' + DEFAULT_SUBREDDIT + '&to=' + `FUTURE_TIMESTAMP`)
+    without_to = self.client.get('/items?subreddit=' + DEFAULT_SUBREDDIT + '&from=' + `PAST_TIMESTAMP`)
+
+    for error_response in [without_subreddit, without_from, without_to]:
+      self.assertEqual(error_response.status_code, 400)
+      self.assertRegexpMatches(error_response.data, 'mandatory\s+params')
+
 
 def clean_data_store(data_source):
   data_source.drop()

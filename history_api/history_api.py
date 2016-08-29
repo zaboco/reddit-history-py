@@ -10,6 +10,8 @@ app.config.update(
   DATABASE_COLLECTION='items'
 )
 
+REQUIRED_PARAMS = ['from', 'to', 'subreddit']
+
 
 def get_data_store():
   if not hasattr(context, 'mongo_client'):
@@ -26,16 +28,40 @@ def close_db(error):
 
 @app.route('/items')
 def items():
-  data_source = get_data_store()
-  args = request.args
-  items = data_source.find({
-    'subreddit': args.get('subreddit'),
+  params = parse_params(request.args)
+  if not params:
+    return params_missing_error()
+  else:
+    return jsonify(fetch_items(params))
+
+
+def parse_params(args):
+  if all(args.has_key(key) for key in REQUIRED_PARAMS):
+    return {
+      'from': float(args.get('from')),
+      'to': float(args.get('to')),
+      'subreddit': args.get('subreddit')
+    }
+  else:
+    return None
+
+
+def fetch_items(params):
+  items = get_data_store().find({
+    'subreddit': params['subreddit'],
     'created_at': {
-      '$gte': float(args.get('from')),
-      '$lte': float(args.get('to'))
+      '$gte': params['from'],
+      '$lte': params['to']
     }
   }).sort('created_at', pymongo.DESCENDING)
-  return jsonify(list(items))
+  return list(items)
+
+
+def params_missing_error():
+  response = {
+    'message': 'Query takes mandatory params: ' + `REQUIRED_PARAMS`
+  }
+  return jsonify(response), 400
 
 
 if __name__ == '__main__':
