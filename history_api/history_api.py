@@ -1,3 +1,5 @@
+#!/usr/local/bin/python
+
 import pymongo
 from flask import Flask, g as context, jsonify, request
 
@@ -40,20 +42,23 @@ def parse_params(args):
     return {
       'from': float(args.get('from')),
       'to': float(args.get('to')),
-      'subreddit': args.get('subreddit')
+      'subreddit': args.get('subreddit'),
+      'keyword': args.get('keyword')
     }
   else:
     return None
 
 
 def fetch_items(params):
-  items = get_data_store().find({
+  query = {
     'subreddit': params['subreddit'],
-    'created_at': {
-      '$gte': params['from'],
-      '$lte': params['to']
-    }
-  }).sort('created_at', pymongo.DESCENDING)
+    'created_at': {'$gte': params['from'], '$lte': params['to']}
+  }
+  if (params['keyword']):
+    query.update({
+      '$text': {'$search': params['keyword']}
+    })
+  items = get_data_store().find(query).sort('created_at', pymongo.DESCENDING)
   return list(items)
 
 

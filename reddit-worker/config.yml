@@ -3,7 +3,7 @@ app:
     - python
     - javascript
   reddit_user_agent: reddit-feed-py (by /u/zaboco)
-  pooling_interval: 60
+  pooling_interval: 5
 
 mongo:
   host: localhost

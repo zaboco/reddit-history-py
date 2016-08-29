@@ -1,12 +1,15 @@
+#!/usr/local/bin/python
+
 import sys
 import time
 
 import yaml
+from pymongo import MongoClient
+
 from history.http_reddit_client import HttpRedditClient
 from history.mappers import map_submission, map_comment
 from history.reddit_descriptors import submissions_descriptor, comments_descriptor
 from history.reddit_history import RedditHistory
-from pymongo import MongoClient
 
 
 with open('config.yml', 'r') as config_file:

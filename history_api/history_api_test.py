@@ -1,14 +1,16 @@
 from unittest import TestCase
 
+import pymongo
 from flask import json
 
 import history_api
 
 PAST_TIMESTAMP, FUTURE_TIMESTAMP = 0.0, 9999999999.0
 DEFAULT_SUBREDDIT = u'some_subreddit'
+DEFAULT_TEXT = u'Some text'
 
 
-def fake_item(index, subreddit=DEFAULT_SUBREDDIT, created_at=PAST_TIMESTAMP + 1):
+def fake_item(index, subreddit=DEFAULT_SUBREDDIT, created_at=PAST_TIMESTAMP + 1, text=DEFAULT_TEXT):
   base_item = {
     '_id': u't3_4zu59' + `index`,
     'author': u'author_name',
@@ -16,7 +18,7 @@ def fake_item(index, subreddit=DEFAULT_SUBREDDIT, created_at=PAST_TIMESTAMP + 1)
     'kind': u'submission',
     'permalink': u'/r/subreddit/comments/4zu59x/title/',
     'score': 2,
-    'text': u'Some text'
+    'text': text
   }
   return dict(base_item, subreddit=subreddit)
 
@@ -31,7 +33,7 @@ class ApiTest(TestCase):
       cls.data_source = history_api.get_data_store()
 
   def setUp(self):
-    clean_data_store(self.data_source)
+    init_data_source(self.data_source)
 
   @classmethod
   def tearDownClass(cls):
@@ -92,6 +94,27 @@ class ApiTest(TestCase):
     for error_response in [without_subreddit, without_from, without_to]:
       self.assertEqual(error_response.status_code, 400)
       self.assertRegexpMatches(error_response.data, 'mandatory\s+params')
+
+  def test_can_also_filter_by_keyword(self):
+    wanted_keyword = u'keyword'
+    wanted_subreddit_items = [fake_item(i, text=wanted_keyword + ' ' + `i`) for i in range(2)]
+    self.data_source.insert_many([
+      wanted_subreddit_items[0],
+      fake_item(100, text=u'irrelevant text'),
+      wanted_subreddit_items[1]
+    ])
+    response = self.client.get('/items?'
+                               'subreddit=' + DEFAULT_SUBREDDIT +
+                               '&from=' + `PAST_TIMESTAMP` +
+                               '&to=' + `FUTURE_TIMESTAMP` +
+                               '&keyword=' + wanted_keyword)
+    items = json.loads(response.data)
+    self.assertEqual(items, wanted_subreddit_items)
+
+
+def init_data_source(data_source):
+  data_source.drop()
+  data_source.create_index([('text', pymongo.TEXT)])
 
 
 def clean_data_store(data_source):
