@@ -17,7 +17,11 @@ So, a call might look like `http://localhost:5000/items?from=1472546520&to=14725
 
 #### Config
 
-The monitored subreddits can be changed in `reddit_worker/config.yml`. Another configurable option is `polling_interval`(in seconds) in the same file.
+The monitored subreddits can be changed in `reddit_worker/config.yml`. Another configurable option is `polling_interval`(in seconds) in the same file. Note that after any change, the docker containers must be rebuilt, so a next run would be:
+
+```sh
+$ docker-compose --build up
+```
 
 ### Tests
 
