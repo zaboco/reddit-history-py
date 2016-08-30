@@ -4,12 +4,17 @@ services:
     build: ./reddit_worker
     env_file:
      - mongo_config.env
+    environment:
+     - MONGO_HOST=db
+     - EXTERNAL_TEST=${EXTERNAL_TEST}
     depends_on:
      - db
   api:
     build: ./history_api
     env_file:
      - mongo_config.env
+    environment:
+     - MONGO_HOST=db
     ports:
      - "5000:5000"
     depends_on:
