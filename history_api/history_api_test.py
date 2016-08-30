@@ -54,6 +54,17 @@ class ApiTest(TestCase):
     items = json.loads(response.data)
     self.assertEqual(items, wanted_subreddit_items)
 
+  def test_subreddit_filter_is_case_insensitive(self):
+    wanted_subreddit = u'wanted_subreddit'
+    wanted_subreddit_items = [fake_item(i, subreddit=wanted_subreddit) for i in range(2)]
+    self.data_source.insert_many(wanted_subreddit_items)
+    response = self.client.get('/items?'
+                               'subreddit=' + wanted_subreddit.upper() +
+                               '&from=' + `PAST_TIMESTAMP` +
+                               '&to=' + `FUTURE_TIMESTAMP`)
+    items = json.loads(response.data)
+    self.assertEqual(items, wanted_subreddit_items)
+
   def test_can_filter_by_time_range(self):
     lower_timestamp = 1472303229.0
     upper_timestamp = lower_timestamp + 10

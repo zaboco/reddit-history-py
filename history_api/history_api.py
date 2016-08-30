@@ -3,6 +3,7 @@ import signal
 import sys
 
 import pymongo
+import re
 from flask import Flask, g as context, jsonify, request
 
 app = Flask(__name__)
@@ -53,7 +54,7 @@ def parse_params(args):
 
 def fetch_items(params):
   query = {
-    'subreddit': params['subreddit'],
+    'subreddit': re.compile(params['subreddit'], re.IGNORECASE),
     'created_at': {'$gte': params['from'], '$lte': params['to']}
   }
   if (params['keyword']):
