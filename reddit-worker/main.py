@@ -1,10 +1,8 @@
-#!/usr/local/bin/python
-
 import sys
 import time
 
+import pymongo
 import yaml
-from pymongo import MongoClient
 
 from history.http_reddit_client import HttpRedditClient
 from history.mappers import map_submission, map_comment
@@ -25,7 +23,16 @@ def build_reddit_history(reddit_descriptor, data_mapper, data_store):
   return RedditHistory(data_store=data_store, reddit_client=reddit_client, item_mapper=data_mapper)
 
 
-mongo_client = MongoClient(MONGO_CONFIG['host'], MONGO_CONFIG['port'])
+try:
+  connection_timeout = 1
+  mongo_client = pymongo.MongoClient(host=MONGO_CONFIG['host'],
+                                     port=MONGO_CONFIG['port'],
+                                     serverSelectionTimeoutMS=connection_timeout)
+  mongo_client.server_info()
+except pymongo.errors.ServerSelectionTimeoutError as e:
+  print('Wrong mongo config: ' + e.message)
+  sys.exit(1)
+
 data_store = mongo_client[MONGO_CONFIG['database']][MONGO_CONFIG['collection']]
 submissions_history = build_reddit_history(submissions_descriptor, map_submission, data_store)
 comments_history = build_reddit_history(comments_descriptor, map_comment, data_store)
