@@ -5,4 +5,4 @@ RUN pip install --requirement /tmp/requirements.txt
 COPY . /opt/app
 
 WORKDIR /opt/app
-CMD ["python", "main.py"]
+CMD ["python", "-u", "main.py"]

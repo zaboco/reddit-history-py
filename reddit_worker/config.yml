@@ -1,0 +1,4 @@
+app:
+  subreddits:
+    - python
+  pooling_interval: 5
