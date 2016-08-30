@@ -2,8 +2,8 @@ version: '2'
 services:
   worker:
     build: ./reddit_worker
-    environment:
-     - MONGO_HOST=db
+    env_file:
+     - mongo_config.env
     depends_on:
      - db
   db:
