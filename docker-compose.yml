@@ -6,5 +6,13 @@ services:
      - mongo_config.env
     depends_on:
      - db
+  api:
+    build: ./history_api
+    env_file:
+     - mongo_config.env
+    ports:
+     - "5000:5000"
+    depends_on:
+     - db
   db:
     image: mongo:3.2

@@ -1,4 +1,6 @@
-#!/usr/local/bin/python
+import os
+import signal
+import sys
 
 import pymongo
 from flask import Flask, g as context, jsonify, request
@@ -6,10 +8,10 @@ from flask import Flask, g as context, jsonify, request
 app = Flask(__name__)
 
 app.config.update(
-  DATABASE_HOST='localhost',
+  DATABASE_HOST=os.getenv('MONGO_HOST', 'localhost'),
   DATABASE_PORT=27017,
-  DATABASE_NAME='reddit_history',
-  DATABASE_COLLECTION='items'
+  DATABASE_NAME=os.getenv('MONGO_DATABASE', 'reddit_history'),
+  DATABASE_COLLECTION=os.getenv('MONGO_COLLECTION', 'items')
 )
 
 REQUIRED_PARAMS = ['from', 'to', 'subreddit']
@@ -70,4 +72,12 @@ def params_missing_error():
 
 
 if __name__ == '__main__':
-  app.run()
+  def cleanup_and_exit(_signum, _frame):
+    print '\nQuiting...'
+    close_db(None)
+    sys.exit(0)
+
+
+  signal.signal(signal.SIGINT, cleanup_and_exit)
+  signal.signal(signal.SIGTERM, cleanup_and_exit)
+  app.run(host='0.0.0.0')

@@ -14,8 +14,8 @@ from history.reddit_history import RedditHistory
 
 REDDIT_USER_AGENT = 'reddit-feed-py (by /u/zaboco)'
 MONGO_HOST = os.getenv('MONGO_HOST', 'localhost')
-MONGO_DATABASE = os.getenv('MONGO_DATABASE')
-MONGO_COLLECTION = os.getenv('MONGO_COLLECTION')
+MONGO_DATABASE = os.getenv('MONGO_DATABASE', 'reddit_history')
+MONGO_COLLECTION = os.getenv('MONGO_COLLECTION', 'items')
 
 with open('config.yml', 'r') as config_file:
   config = yaml.load(config_file)
